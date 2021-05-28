@@ -1,0 +1,20 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/kleiber/Desktop/VisionProject/join.cpp
+iostream
+-
+fstream
+-
+iomanip
+-
+algorithm
+-
+chrono
+-
+

@@ -1,0 +1,105 @@
+cmake_minimum_required(VERSION 2.8)
+project(3dkht)
+
+IF(NOT CMAKE_BUILD_TYPE)
+  SET(CMAKE_BUILD_TYPE Release)
+ENDIF()
+
+MESSAGE("Build type: " ${CMAKE_BUILD_TYPE})
+
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS}  -Wall  -O3 -march=native ")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall   -O3 -march=native")
+
+# Check C++11 or C++0x support
+include(CheckCXXCompilerFlag)
+CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
+CHECK_CXX_COMPILER_FLAG("-std=c++0x" COMPILER_SUPPORTS_CXX0X)
+if(COMPILER_SUPPORTS_CXX11)
+   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+   add_definitions(-DCOMPILEDWITHC11)
+   message(STATUS "Using flag -std=c++11.")
+elseif(COMPILER_SUPPORTS_CXX0X)
+   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
+   add_definitions(-DCOMPILEDWITHC0X)
+   message(STATUS "Using flag -std=c++0x.")
+else()
+   message(FATAL_ERROR "The compiler ${CMAKE_CXX_COMPILER} has no C++11 support. Please use a different C++ compiler.")
+endif()
+
+LIST(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake_modules)
+
+find_package(OpenMP)
+if (OPENMP_FOUND)
+    set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
+    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+endif()
+
+find_package(Eigen3 REQUIRED)
+find_package(FREEGLUT QUIET)
+find_package(GLUT QUIET)
+
+include_directories( ${PROJECT_SOURCE_DIR} ${EIGEN3_INCLUDE_DIR} ${GLUT_INCLUDE_DIR} ${FREEGLUT_INCLUDE_DIR})
+
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib)
+
+set(HDRS_SwissArmyKnife
+SwissArmyKnife/CamManager.h
+SwissArmyKnife/Canvas.h
+SwissArmyKnife/File.h
+SwissArmyKnife/FileOpen.h
+SwissArmyKnife/LargeNumber.h
+SwissArmyKnife/Lighting.h
+SwissArmyKnife/Manager.h
+SwissArmyKnife/Mathematic.h
+SwissArmyKnife/Matrix4d.h
+SwissArmyKnife/OpenGL.h
+SwissArmyKnife/Random.h
+SwissArmyKnife/SwissArmyKnife.h
+SwissArmyKnife/Timer.h
+SwissArmyKnife/Utils.h
+SwissArmyKnife/Vector4d.h
+)
+set(SRCS_SwissArmyKnife
+SwissArmyKnife/CamManager.cpp
+SwissArmyKnife/LargeNumber.cpp
+SwissArmyKnife/Lighting.cpp
+SwissArmyKnife/Matrix4d.cpp
+SwissArmyKnife/OpenGL.cpp
+SwissArmyKnife/Utils.cpp
+SwissArmyKnife/Vector4d.cpp
+)
+
+set(HDRS_DUTILS
+#Planos
+accum_ball_cell_t.h
+accum_cell_t.h
+accumulatorball_t.h
+bin_t.h
+hough.h
+kernel_t.h
+octree_t.h
+peak_detection.h
+plane_t.h
+reader_file.h
+settings.h
+sample_app.h
+voting.h
+)
+set(SRCS_DUTILS
+#Planos
+accumulatorball_t.cpp
+hough.cpp
+octree_t.cpp
+sample_app.cpp
+voting.cpp
+)
+
+add_library(${PROJECT_NAME} SHARED ${SRCS_DUTILS} ${SRCS_SwissArmyKnife})
+
+target_link_libraries(${PROJECT_NAME} ${GLUT_LIBRARIES} ${FREEGLUT_LIBRARY})
+
+# Build main
+add_executable(main main.cpp)
+target_link_libraries(main ${PROJECT_NAME})
+
+

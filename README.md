@@ -1,2 +1,0 @@
-# Map Point Optimization in Keyframe-Based SLAM using Covisibility Graph and Information Fusion
-Visual SLAM is a technology able to build a map of an unknown environment and perform location, simultaneously leveraging the partially built map, using just computer vision. In this work, we present a robust method to maintain a refined map that uses a covisibility graph and an algorithm based on information fusion to build a probabilistic map, which explicitly models outlier measurements.
